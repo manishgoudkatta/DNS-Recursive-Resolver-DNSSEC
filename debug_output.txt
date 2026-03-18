@@ -1,0 +1,197 @@
+=================================================================
+  DNS RESOLVER DEBUG TRACE
+  Resolving: www.cnn.com (A record)
+=================================================================
+
+=================================================================
+CALL #1: resolve("www.cnn.com", A, 198.41.0.4)
+=================================================================
+Sending query to 198.41.0.4: "What is A for www.cnn.com?"
+Response: NOERROR (success)
+
+--- ANSWER SECTION (0 record sets) ---
+  (empty)
+
+--- AUTHORITY SECTION (1 record sets) ---
+  com.  NS  l.gtld-servers.net.
+  com.  NS  j.gtld-servers.net.
+  com.  NS  h.gtld-servers.net.
+  com.  NS  d.gtld-servers.net.
+  com.  NS  b.gtld-servers.net.
+  com.  NS  f.gtld-servers.net.
+  com.  NS  k.gtld-servers.net.
+  com.  NS  m.gtld-servers.net.
+  com.  NS  i.gtld-servers.net.
+  com.  NS  g.gtld-servers.net.
+  com.  NS  a.gtld-servers.net.
+  com.  NS  c.gtld-servers.net.
+  com.  NS  e.gtld-servers.net.
+
+--- ADDITIONAL SECTION (11 record sets) ---
+  l.gtld-servers.net.  A  192.41.162.30
+  l.gtld-servers.net.  AAAA  2001:500:d937::30
+  j.gtld-servers.net.  A  192.48.79.30
+  j.gtld-servers.net.  AAAA  2001:502:7094::30
+  h.gtld-servers.net.  A  192.54.112.30
+  h.gtld-servers.net.  AAAA  2001:502:8cc::30
+  d.gtld-servers.net.  A  192.31.80.30
+  d.gtld-servers.net.  AAAA  2001:500:856e::30
+  b.gtld-servers.net.  A  192.33.14.30
+  b.gtld-servers.net.  AAAA  2001:503:231d::2:30
+  f.gtld-servers.net.  A  192.35.51.30
+
+SCENARIO 2: Additional section has IPs (glue records)
+  name_list = ['www.cnn.com.']
+  servers   = ['192.41.162.30', '192.48.79.30', '192.54.112.30', '192.31.80.30', '192.33.14.30', '192.35.51.30']
+
+=================================================================
+    CALL #2: resolve("www.cnn.com.", A, 192.41.162.30)
+=================================================================
+    Sending query to 192.41.162.30: "What is A for www.cnn.com.?"
+    Response: NOERROR (success)
+
+    --- ANSWER SECTION (0 record sets) ---
+      (empty)
+
+    --- AUTHORITY SECTION (1 record sets) ---
+      cnn.com.  NS  ns-587.awsdns-09.net.
+      cnn.com.  NS  ns-378.awsdns-47.com.
+      cnn.com.  NS  ns-1652.awsdns-14.co.uk.
+      cnn.com.  NS  ns-1242.awsdns-27.org.
+
+    --- ADDITIONAL SECTION (1 record sets) ---
+      ns-378.awsdns-47.com.  A  205.251.193.122
+
+    SCENARIO 2: Additional section has IPs (glue records)
+      name_list = ['www.cnn.com.']
+      servers   = ['205.251.193.122']
+
+=================================================================
+        CALL #3: resolve("www.cnn.com.", A, 205.251.193.122)
+=================================================================
+        Sending query to 205.251.193.122: "What is A for www.cnn.com.?"
+        Response: NOERROR (success)
+
+        --- ANSWER SECTION (1 record sets) ---
+          www.cnn.com.  CNAME  cnn-tls.map.fastly.net.
+
+        --- AUTHORITY SECTION (1 record sets) ---
+          cnn.com.  NS  ns-1242.awsdns-27.org.
+          cnn.com.  NS  ns-1652.awsdns-14.co.uk.
+          cnn.com.  NS  ns-378.awsdns-47.com.
+          cnn.com.  NS  ns-587.awsdns-09.net.
+
+        --- ADDITIONAL SECTION (0 record sets) ---
+          (empty)
+
+        EXTRACTED:
+          ret        = []
+          cname_list = ['cnn-tls.map.fastly.net.']
+
+        SCENARIO 1: Got CNAME, restart from root
+          name_list = ['cnn-tls.map.fastly.net.']
+          servers   = ['198.41.0.4']
+
+=================================================================
+            CALL #4: resolve("cnn-tls.map.fastly.net.", A, 198.41.0.4)
+=================================================================
+            Sending query to 198.41.0.4: "What is A for cnn-tls.map.fastly.net.?"
+            Response: NOERROR (success)
+
+            --- ANSWER SECTION (0 record sets) ---
+              (empty)
+
+            --- AUTHORITY SECTION (1 record sets) ---
+              net.  NS  m.gtld-servers.net.
+              net.  NS  k.gtld-servers.net.
+              net.  NS  b.gtld-servers.net.
+              net.  NS  f.gtld-servers.net.
+              net.  NS  d.gtld-servers.net.
+              net.  NS  h.gtld-servers.net.
+              net.  NS  j.gtld-servers.net.
+              net.  NS  l.gtld-servers.net.
+              net.  NS  a.gtld-servers.net.
+              net.  NS  e.gtld-servers.net.
+              net.  NS  c.gtld-servers.net.
+              net.  NS  g.gtld-servers.net.
+              net.  NS  i.gtld-servers.net.
+
+            --- ADDITIONAL SECTION (11 record sets) ---
+              m.gtld-servers.net.  A  192.55.83.30
+              m.gtld-servers.net.  AAAA  2001:501:b1f9::30
+              k.gtld-servers.net.  A  192.52.178.30
+              k.gtld-servers.net.  AAAA  2001:503:d2d::30
+              b.gtld-servers.net.  A  192.33.14.30
+              b.gtld-servers.net.  AAAA  2001:503:231d::2:30
+              f.gtld-servers.net.  A  192.35.51.30
+              f.gtld-servers.net.  AAAA  2001:503:d414::30
+              d.gtld-servers.net.  A  192.31.80.30
+              d.gtld-servers.net.  AAAA  2001:500:856e::30
+              h.gtld-servers.net.  A  192.54.112.30
+
+            SCENARIO 2: Additional section has IPs (glue records)
+              name_list = ['cnn-tls.map.fastly.net.']
+              servers   = ['192.55.83.30', '192.52.178.30', '192.33.14.30', '192.35.51.30', '192.31.80.30', '192.54.112.30']
+
+=================================================================
+                CALL #5: resolve("cnn-tls.map.fastly.net.", A, 192.55.83.30)
+=================================================================
+                Sending query to 192.55.83.30: "What is A for cnn-tls.map.fastly.net.?"
+                Response: NOERROR (success)
+
+                --- ANSWER SECTION (0 record sets) ---
+                  (empty)
+
+                --- AUTHORITY SECTION (1 record sets) ---
+                  fastly.net.  NS  ns1.fastly.net.
+                  fastly.net.  NS  ns2.fastly.net.
+                  fastly.net.  NS  ns3.fastly.net.
+                  fastly.net.  NS  ns4.fastly.net.
+
+                --- ADDITIONAL SECTION (4 record sets) ---
+                  ns1.fastly.net.  A  23.235.32.32
+                  ns2.fastly.net.  A  104.156.80.32
+                  ns3.fastly.net.  A  23.235.36.32
+                  ns4.fastly.net.  A  104.156.84.32
+
+                SCENARIO 2: Additional section has IPs (glue records)
+                  name_list = ['cnn-tls.map.fastly.net.']
+                  servers   = ['23.235.32.32', '104.156.80.32', '23.235.36.32', '104.156.84.32']
+
+=================================================================
+                    CALL #6: resolve("cnn-tls.map.fastly.net.", A, 23.235.32.32)
+=================================================================
+                    Sending query to 23.235.32.32: "What is A for cnn-tls.map.fastly.net.?"
+                    Response: NOERROR (success)
+
+                    --- ANSWER SECTION (1 record sets) ---
+                      cnn-tls.map.fastly.net.  A  199.232.107.5
+
+                    --- AUTHORITY SECTION (1 record sets) ---
+                      fastly.net.  NS  ns1.fastly.net.
+                      fastly.net.  NS  ns2.fastly.net.
+                      fastly.net.  NS  ns3.fastly.net.
+                      fastly.net.  NS  ns4.fastly.net.
+
+                    --- ADDITIONAL SECTION (0 record sets) ---
+                      (empty)
+
+                    EXTRACTED:
+                      ret        = ['199.232.107.5']
+                      cname_list = []
+
+                    >>> FOUND ANSWER! Returning: ['199.232.107.5']
+
+                Returning up: ['199.232.107.5']
+
+            Returning up: ['199.232.107.5']
+
+        Returning up: ['199.232.107.5']
+
+    Returning up: ['199.232.107.5']
+
+Returning up: ['199.232.107.5']
+
+=================================================================
+  FINAL RESULT: www.cnn.com = ['199.232.107.5']
+=================================================================
